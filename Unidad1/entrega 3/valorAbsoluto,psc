@@ -1,0 +1,16 @@
+//algoritmo creado por: Jesus Salvador Garcia Lopez
+// Leer un número y escribir el valor absoluto del mismo.
+
+algoritmo valorAbsoluto
+    definir numero como real
+    escribir "Dame el numero a darte el valor absoluto"
+    Leer numero 
+    si numero<0 entonces 
+        escribir "el valor absoluto es: ",(numero+(2*numero))
+    sino
+        si numero>=0 entonces
+             escribir "el valor absoluto es: ",numero
+        finsi
+    finsi
+finalgoritmo
+        

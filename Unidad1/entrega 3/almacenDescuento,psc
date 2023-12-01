@@ -1,0 +1,16 @@
+//Algoritmo creado por: Jesus Salvador Garcia Lopez
+//En un almacén se hace un 20% de descuento a los clientes cuya compra supere los $1000 ¿Cuál será
+//la cantidad que pagará una persona por su compra?
+
+
+Algoritmo almacenDescuento
+    Definir cantidad,total como reales
+    Escribir "dame la cantidad de compra"
+    leer cantidad
+    si cantidad > 1000 entonces
+        total=cantidad * .8
+    sino 
+        total=cantidad
+    
+    Escribir "el total a pagar es ",total
+finalgoritmo

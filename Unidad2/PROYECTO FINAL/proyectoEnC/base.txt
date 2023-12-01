@@ -1,0 +1,604 @@
+/* Este codigo ha sido generado por el modulo psexport 20230113-w32 de PSeInt.
+Es posible que el codigo generado no sea completamente correcto. Si encuentra
+errores por favor reportelos en el foro (http://pseint.sourceforge.net). */
+
+#include<stdio.h>
+#include<time.h>
+#include<stdbool.h>
+#include<string.h>
+
+/* No hay en el C estandar una funcion equivalente a "esperar", pero puede programarse. */
+void esperar(double t);
+
+/* En C no hay variables para guardar cadenas de texto, sino que debe construirse
+   un arreglo de caracteres (tipo char). El tama�o del arreglo determina la longitud
+   m�xima que puede tener la cadena que guarda (tama�o-1, por el caracter de terminaci�n).
+   La constante MAX_STRLEN define el tama�o m�ximo que se utiliza en este programa para
+   cualquier cadena. */
+#define MAX_STRLEN 256
+
+/* Para las variables que no se pudo determinar el tipo se utiliza la constante
+   SIN_TIPO. El usuario debe reemplazar sus ocurrencias por el tipo adecuado
+   (usualmente int,float,bool, o char[]). */
+#define SIN_TIPO float
+
+/* Para leer variables de texto se utiliza scanf, que lee solo una palabra. 
+   Para leer una linea completa (es decir, incluyendo los espacios en blanco)
+   se debe utilzar ges (ej, reemplazar scanf("%s",x) por gets(x)) pero 
+   obliga a agregar un getchar() antes del gets si antes del mismo se ley�
+   otra variable con scanf. */
+
+// Declaraciones adelantadas de las funciones
+void carga(SIN_TIPO null);
+void llenadoarreglo(char *alumnos[][], float parciales[][]);
+void preguntadecontrol(SIN_TIPO alumnos, SIN_TIPO parciales);
+void menu(SIN_TIPO alumnos, SIN_TIPO parciales);
+void impresionalumnos(SIN_TIPO alumnos[][], SIN_TIPO parciales[][]);
+void promediogeneralsinredondear(SIN_TIPO alumnos, float parciales[][]);
+void alumnomenorcalificacion(SIN_TIPO alumnos[][], float parciales[][]);
+void alumnomayorcalificacion(SIN_TIPO alumnos[][], SIN_TIPO parciales[][]);
+void ordenamientomenormayor(SIN_TIPO alumnos[][], SIN_TIPO parciales[][]);
+void intercambiarcalificaciones(float calificaciones[], int i, int j);
+void intercambiaralumnos(char *alumnosordenado[][], int i, int j);
+void busquedaalumnoporid(char *alumnos[][], SIN_TIPO parciales[][]);
+void porcentajesaprobadosreprobados(SIN_TIPO alumnos, float parciales[][]);
+
+/* sistema de control academico */
+/* proyecto final de la materia logica de programacion */
+/* docente: dr. CARLOS ARGELIO AREVALO MERCADO */
+/* realizado por: */
+/* id:391107	SERRANO LEYVA DANTE IVAN */
+/* id:440243	VALDES DIAZ LEONARDO */
+/* id:454327	BALDERAS ANDRACA GISSELA LIZET */
+/* id:466239	GARCIA LOPEZ JESUS SALVADOR */
+int main() {
+	bool acceso;
+	char alumnos[MAX_STRLEN][3][13];
+	int id;
+	int idvalido;
+	int intentos;
+	float parciales[5][13];
+	int password;
+	int passwordvalido;
+	/* DIFINICION DE VARIABLES Y CONSTANTES A USAR */
+	intentos = 0;
+	acceso = false;
+	idvalido = 1234;
+	passwordvalido = 1234;
+	/* INICIO DEL PROCESO YA CON LAS VARIABLES */
+	printf("|BIENVENIDO PROFESOR|\n");
+	printf("Para acceder a los datos registra lo siguiente\n");
+	do {
+		/* CICLO QUE PERMITE LA VALIDACION DE LOS 3 INTENTOS */
+		printf("ID ");
+		/* PIDE EL ID DEL PROFESOR */
+		scanf("%i", &id);
+		/* LEE LOS ID DADO POR EL USUARIO */
+		printf("Contrase�a ");
+		/* PIDE LA CONTRASE�A DEL PROFESOR */
+		scanf("%i", &password);
+		/* LEE LA CONTRASE�A DADA POR EL USUARIO */
+		if ((id==idvalido) && (password==passwordvalido)) {
+			/* VERIFICAC EL USUARIO Y CONTRASE�A PARA EL ACCESO */
+			acceso = true;
+			/* SE LE AVISA AL SISTEMA QUE EL ACCESO ES CORRECTO PARA QUE NO TENGA UN ERROR DE LOGICA */
+			intentos = 3;
+			/* CUMPLE LA CONDICION DE SALIDA DEL CICLO */
+			printf("\n"); /* no hay forma directa de borrar la pantalla con C estandar */
+			/* LIMPIA LA PANTALLA */
+			printf("ACCESO CORRECTO\n");
+			/* LE COMUNICA AL USUARIO SU ACCESO CORRECTO */
+			carga("NULL");
+			/* SE LLAMA A LA FUNCION CARGA LA CUAL SIRVE COMO TRANSICION EN VARIAS PARTES DEL CODIGO */
+			llenadoarreglo(alumnos, parciales);
+			/* SE LLAMA A LA FUNCION MENU LA CUAL SERA LA PARTE PRINCIPAL DEL SISTEMA */
+		} else {
+			/* SI LAS CONDICIONES DE VALIDACION ANTERIORES NO SE CUMPLEN REALIZA OTRA ACCION */
+			if ((id!=idvalido)) {
+				/* VERIFICA QUE EL ID SEA ERRONEO */
+				printf("�ID ERRONEO!\n");
+				/* LE COMUNICA AL USUARIO QUE EL ID DADO ES ERRONEO */
+			}
+			if ((password!=passwordvalido)) {
+				/* VERIFICA QUE LA CONTRASE�A SEA ERRONEA */
+				printf("�CONTRASE�A ERRONEA!\n");
+				/* LE COMUNICA AL USUARIO QUE SU CONTRASE�A DADA ES ERRONEA */
+			}
+			intentos = intentos+1;
+			/* SE LE QUITA UN INTENTO AL USUARIO */
+			printf("quedan %f intentos posibles\n", (3-intentos));
+			/* SE LE NOTIFICA CUANTOS INTENTOS LE QUEDAN PARA PONER LOS DATOS CORRECTOS */
+			printf("Vuelva a intentarlo\n");
+			/* SE LE NOTIFICA AL USUARIO 	QUE  */
+		}
+	} while ((intentos!==3));
+	/* SE ESTABLECE HASTA CUANDO SE REPETIRA EL REGISTRO DE DATOS,CONCORDANDO CON LOS INTENTOS PERMITIDOS */
+	if (!acceso) {
+		/* EL SISTEMA VERIFICA QUE EL ACCESO SEA CORRECTO SI NO SE HARA LO SIGUIENTE */
+		printf("\n"); /* no hay forma directa de borrar la pantalla con C estandar */
+		/* LIMPIA LA PANTALLA */
+		printf("INTENTOS AGOTADOS VUELVA LUEGO\n");
+		/* LE COMUNICA AL USUARIO QUE TERMINO SUS INTENTOS */
+	}
+	return 0;
+}
+
+void carga(SIN_TIPO null) {
+	int i;
+	/* DECLARACION DE LA FUNCION CARGA LA CUAL SERA USADA EN VARIAS AREAS DEL PROGRAMA */
+	/* SE DEFINEN LAS VARIABLES A USAR EN LA FUNCION */
+	/* INICIO EL PROCESO DE LA FUNCION  */
+	esperar(2*1000);
+	/* SE LE COMUNICA AL SISTEMA QUE ESPERE UN MOMENTO */
+	printf("\n"); /* no hay forma directa de borrar la pantalla con C estandar */
+	/* LIMPIA LA PANTALLA */
+	/* EL SIGUIENTE PROCESO IMITA UNA CARGA  */
+	printf("CARGANDO.");
+	for (i=1; i<=5; ++i) {
+		/* ESTE PARA CONTROLA EL TIEMPO EL CUAL SE TARDA LA CARGA  */
+		printf(".");
+		esperar(1*1000);
+	}
+	printf("\n"); /* no hay forma directa de borrar la pantalla con C estandar */
+	printf("CARGA COMPLETA\n");
+	esperar(3*1000);
+}
+
+void llenadoarreglo(char *alumnos[][], float parciales[][]) {
+	bool aceptada;
+	bool aceptada));
+	SIN_TIPO aceptada));;
+	float califiacion;
+	float calificacion;
+	int i;
+	int j;
+	float promedio;
+	float suma;
+	/* DEFINICION DE VARIABLES A USAR EN LA FUNCION  */
+	/* LLENADO DE LOS ALUMNOS PRIMERA PARTE, ID */
+	alumnos[0][0] = "440243";
+	alumnos[0][1] = "391107";
+	alumnos[0][2] = "454327";
+	alumnos[0][3] = "466239";
+	alumnos[0][4] = "494411";
+	alumnos[0][5] = "307171";
+	alumnos[0][6] = "371088";
+	alumnos[0][7] = "388486";
+	alumnos[0][8] = "332574";
+	alumnos[0][9] = "300383";
+	alumnos[0][10] = "300181";
+	alumnos[0][11] = "346328";
+	alumnos[0][12] = "351025";
+	/* LLENADO DE LOS ALUMNOS SEGUNDA PARTE, PRIMER NOMBRE */
+	alumnos[1][0] = "LENARDO";
+	alumnos[1][1] = "DANTE";
+	alumnos[1][2] = "GISSELA";
+	alumnos[1][3] = "JESUS";
+	alumnos[1][4] = "SIMON";
+	alumnos[1][5] = "DANIELA";
+	alumnos[1][6] = "RAFAEL";
+	alumnos[1][7] = "ANDREA";
+	alumnos[1][8] = "GABRIELA";
+	alumnos[1][9] = "AXEL";
+	alumnos[1][10] = "LUIS";
+	alumnos[1][11] = "MAXIM";
+	alumnos[1][12] = "OBED";
+	/* LLENADO DE LOS ALUMNOS TERCERA PARTE, PRIMER APELLIDO */
+	alumnos[2][0] = "VALADES";
+	alumnos[2][1] = "SERRANO";
+	alumnos[2][2] = "BALDERAS";
+	alumnos[2][3] = "GARCIA";
+	alumnos[2][4] = "VELA";
+	alumnos[2][5] = "TIRADO";
+	alumnos[2][6] = "CARRILLO";
+	alumnos[2][7] = "DUE�AS";
+	alumnos[2][8] = "PADILLA";
+	alumnos[2][9] = "DELFIN";
+	alumnos[2][10] = "MENDOZA";
+	alumnos[2][11] = "ROSALES";
+	alumnos[2][12] = "CAMPOS";
+	/* LLENADO DE PARCIALES,DATOS DADOS POR EL MAESTRO EXEPTO LA ULTIMA CASILLA QUE EQUIVALE A LA CALIFICACION FINAL */
+	for (i=0; i<=12; ++i) {
+		for (j=0; j<=3; ++j) {
+			aceptada = false;
+			/* variable logica utilizada para verificar si se acepta o no la calificacion dada por el usuario */
+			printf("dame la calificacion del parcial %f del alumno %s %s", (j+1), alumnos[1][i], alumnos[2][i]);
+			/* el siguiente proceso verifica que la calificacion este dentro del rango permitido y hace la sumatoria */
+			do {
+				scanf("%f", &califiacion);
+				if ((.99<califiacion) && (califiacion<10.01)) {
+					suma = suma+califiacion;
+					parciales[j][i] = califiacion;
+					aceptada = true;
+				} else {
+					printf("la calificacion no entra en los parametros permitidos (1 a 10)\n");
+					printf("vuelva a introducirla\n");
+				}
+			} while (!(aceptada));
+		}
+		/* el siguiente proceso realiza el redondeo segun las normas de la UAA */
+		promedio = suma/4;
+		if (promedio<6) {
+			parciales[4][i] = promedio;
+		} else {
+			if (promedio<6.5) {
+				parciales[4][i] = 6;
+			} else {
+				if (promedio<7.5) {
+					parciales[4][i] = 7;
+				} else {
+					if (promedio<8.5) {
+						parciales[4][i] = 8;
+					} else {
+						if (promedio<9.5) {
+							parciales[4][i] = 9;
+						} else {
+							parciales[4][i] = 10;
+						}
+					}
+				}
+			}
+		}
+		suma = 0;
+		/* svariable suma con valor cero para evitar problemas de logica */
+	}
+	menu(alumnos, parciales);
+}
+
+void preguntadecontrol(SIN_TIPO alumnos, SIN_TIPO parciales) {
+	bool aceptable;
+	bool aceptable));
+	SIN_TIPO aceptable));;
+	char respuesta[MAX_STRLEN];
+	/* esta funcion le pregunta al usuario si desea ver mas reportes */
+	/* SE DECLARA LAS VARIABLES A USAR EN EL PROCESO */
+	aceptable = false;
+	do {
+		/* sirve para asegurar de que se de una respuesta valida */
+		printf("desea seguir revisando reportes?(si/no)");
+		scanf("%s", respuesta);
+		if ((strcmp(respuesta, "Si")==0) || (strcmp(respuesta, "SI")==0) || (strcmp(respuesta, "si")==0) || (strcmp(respuesta, "sI")==0)) {
+			/* SE VALIDA QUE EL USUARIO HAYA INTRODUCIDO UNA RESPUESTA VALIDA */
+			carga("NULL");
+			/* se llama a la funcion carga */
+			menu(alumnos, parciales);
+			/* se llama al menu */
+		} else {
+			if ((strcmp(respuesta, "No")==0) || (strcmp(respuesta, "NO")==0) || (strcmp(respuesta, "no")==0) || (strcmp(respuesta, "nO")==0)) {
+				/* SE VALIDA QUE EL USUARIO HAYA INTRODUCIDO UNA RESPUESTA VALIDA */
+				printf("\n"); /* no hay forma directa de borrar la pantalla con C estandar */
+				/* se limpia la pantalla */
+				printf("VUELVA PRONTO\n");
+				/* se despide del usuario	 */
+			} else {
+				printf("favor de dar una respuesta valida \n");
+				/* se le pide al usuario una respuesta valida */
+			}
+		}
+	} while (!(aceptable));
+}
+
+void menu(SIN_TIPO alumnos, SIN_TIPO parciales) {
+	bool aceptable;
+	bool aceptable));
+	SIN_TIPO aceptable));;
+	int op;
+	/* DECLARACION DE LA FUNCION MENU EL CUAL ES LA PARTE PRINCIPAL DEL SISTEMA */
+	/* definimos las variables a utilizar en el sub proceso  */
+	/* se establece lo que vera el usuario en la pantalla */
+	do {
+		/* este repetir funciona para asegurar de que el usuario meta una opcion valida */
+		printf("\n"); /* no hay forma directa de borrar la pantalla con C estandar */
+		/* se limpia la pantalla para mejorar la visualizacion de la informacion */
+		printf("|MENU|\n");
+		/* se declara el titulo de la informacion que esta viendo el usuario */
+		printf("\n");
+		/* sirve para dar un renglon de separacion de el titulo y la informacion */
+		/* a continuacion se muestra las opciones que tiene el usuario para seleccionar */
+		printf("1) Un reporte general con la calificaci�n final de todos los alumnos, mostrando los parciales y la calificaci�n final.\n");
+		printf("   Cada parcial vale el 25% de la calificaci�n final. La calificaci�n final debe redondearse\n");
+		printf("2) El promedio general del grupo, sin redondear.\n");
+		printf("3) Mostrar el alumno con la menor calificaci�n\n");
+		printf("4) Mostrar el alumno con la mayor calificaci�n\n");
+		printf("5) Reporte de calificaciones del grupo ordenados de mayor a menor\n");
+		printf("6) B�squeda por ID de la calificaci�n final de un alumno\n");
+		printf("7) Generar los porcentajes de aprobaci�n y reprobaci�n del grupo\n");
+		printf("\n");
+		printf("dame el numero de opcion a escoger ");
+		/* se le pide una opcion a escoger al usuario */
+		scanf("%i", &op);
+		/* lee la opcion seleccionada del usuario */
+		switch (op) {
+		case 1:
+			/* este proceso corresponde a la opcion 1 del  */
+			aceptable = true;
+			/* le dice al sistema que deje de Repetir el menu */
+			carga("NULL");
+			/* llama a la funcion carga */
+			impresionalumnos(alumnos, parciales);
+			/* se llama a la funcion que realiza la opcion 1 */
+			break;
+		case 2:
+			aceptable = true;
+			/* le dice al sistema que deje de Repetir el menu */
+			carga("NULL");
+			/* llama a la funcion carga */
+			promediogeneralsinredondear(alumnos, parciales);
+			/* se llama a la funcion que realiza la opcion 2 */
+			break;
+		case 3:
+			aceptable = true;
+			/* le dice al sistema que deje de Repetir el menu */
+			carga("NULL");
+			/* llama a la funcion carga */
+			alumnomenorcalificacion(alumnos, parciales);
+			/* se llama a la funcion que realiza la opcion 3 */
+			break;
+		case 4:
+			aceptable = true;
+			/* le dice al sistema que deje de Repetir el menu */
+			carga("NULL");
+			/* llama a la funcion carga */
+			alumnomayorcalificacion(alumnos, parciales);
+			/* se llama a la funcion que realiza la opcion 4 */
+			break;
+		case 5:
+			aceptable = true;
+			/* le dice al sistema que deje de Repetir el menu */
+			carga("NULL");
+			/* llama a la funcion carga */
+			ordenamientomenormayor(alumnos, parciales);
+			/* se llama a la funcion que realiza la opcion 5 */
+			break;
+		case 6:
+			aceptable = true;
+			/* le dice al sistema que deje de Repetir el menu */
+			carga("NULL");
+			/* llama a la funcion carga */
+			busquedaalumnoporid(alumnos, parciales);
+			/* se llama a la funcion que realiza la opcion 6 */
+			break;
+		case 7:
+			aceptable = true;
+			/* le dice al sistema que deje de Repetir el menu */
+			carga("NULL");
+			/* llama a la funcion carga */
+			porcentajesaprobadosreprobados(alumnos, parciales);
+			/* se llama a la funcion que realiza la opcion 7 */
+			break;
+		default:
+			printf("No se selecciono una opcion valida vuelva a intentarlo \n");
+			/* se le notifica al usuario que su opcion no es valida que vuelva a intentarlo  */
+			esperar(3*1000);
+			/* esperamos unos segundos para 	que el usuario pueda leer el mensaje */
+		}
+	} while (!(aceptable));
+}
+
+void impresionalumnos(SIN_TIPO alumnos[][], SIN_TIPO parciales[][]) {
+	int i;
+	int j;
+	/* funcion que realiza opcion 1 del menu */
+	printf("\n"); /* no hay forma directa de borrar la pantalla con C estandar */
+	/* LIMPIAMOS PANTALLA */
+	/* DEFINIMOS LAS VARIABLES A USAR EN EL SUB Proceso  */
+	printf("|REPORTE GENERAL DE CALIFICACIONES|\n");
+	/* mostramos el titulo del reporte que vera el usuario */
+	printf("\n");
+	/* damos un salto de linea para separar el titulo de la informacion */
+	for (i=0; i<=12; ++i) {
+		/* el siguiente para imprime la informacion deseada por el usuario */
+		for (j=0; j<=2; ++j) {
+			printf("%f  ", alumnos[j][i]);
+		}
+		for (j=0; j<=4; ++j) {
+			printf("%f  ", parciales[j][i]);
+		}
+		printf("\n");
+	}
+	preguntadecontrol(alumnos, parciales);
+	/* llama a la funcion preguntaDeControl la cual se usa para comprobar si el usario quiere o no seguir en el sistema */
+}
+
+void promediogeneralsinredondear(SIN_TIPO alumnos, float parciales[][]) {
+	int i;
+	int j;
+	float promedio;
+	float suma;
+	float sumageneral;
+	/* esta funcion realiza la opcion 2 del menu */
+	printf("\n"); /* no hay forma directa de borrar la pantalla con C estandar */
+	/* limpiamos pantalla */
+	/* definir las variables a utilizar en el sub Proceso  */
+	/* lo siguiente realiza el promedio general sin redondear */
+	for (i=0; i<=12; ++i) {
+		for (j=0; j<=3; ++j) {
+			suma = suma+parciales[j][i];
+		}
+		promedio = suma/4;
+		sumageneral = sumageneral+promedio;
+		suma = 0;
+	}
+	printf("|PROMEDIO GENERAL DEL GRUPO|\n");
+	/* se imprime el titulo del reporte  */
+	printf("\n");
+	printf("el promedio general del grupo sin redondear es %f\n", (sumageneral/13));
+	/* se imprime la informacion del reporte */
+	preguntadecontrol(alumnos, parciales);
+}
+
+void alumnomenorcalificacion(SIN_TIPO alumnos[][], float parciales[][]) {
+	int i;
+	float menorcaificacion;
+	float menorcalificacion;
+	int posicion;
+	char respuesta[MAX_STRLEN];
+	/* esta funcion realiza la opcion 3 del menu */
+	printf("\n"); /* no hay forma directa de borrar la pantalla con C estandar */
+	/* limpiamos pantalla */
+	/* declaramos las variablesa utilizar en el proceso */
+	menorcalificacion = 10;
+	/* se le da el numero mas alto posible para que no tenga problemas de logica */
+	for (i=0; i<=12; ++i) {
+		/* este para busca al alumno con la calificacion final mas baja */
+		if (parciales[4][i]<menorcalificacion) {
+			menorcalificacion = parciales[4][i];
+			posicion = i;
+		}
+	}
+	printf("|ALUMNO CON MENOR CALIFICACION|\n");
+	/* se imprime el titulo del reporte */
+	printf("\n");
+	printf("El alumno con la menor calificacion es: \n");
+	for (i=0; i<=2; ++i) {
+		/* este para imprime la informacion del reporte */
+		printf("%f  ", alumnos[i][posicion]);
+	}
+	for (i=0; i<=4; ++i) {
+		printf("%f  ", parciales[i][posicion]);
+	}
+	printf("\n");
+	preguntadecontrol(alumnos, parciales);
+}
+
+void alumnomayorcalificacion(SIN_TIPO alumnos[][], SIN_TIPO parciales[][]) {
+	int i;
+	float menorcaificacion;
+	SIN_TIPO menorcalificacion;
+	int posicion;
+	char respuesta[MAX_STRLEN];
+	printf("\n"); /* no hay forma directa de borrar la pantalla con C estandar */
+	/* limpiamos pantalla */
+	/* declaramos las variablesa utilizar en el proceso */
+	for (i=0; i<=12; ++i) {
+		if (parciales[4][i]>menorcalificacion) {
+			menorcalificacion = parciales[4][i];
+			posicion = i;
+		}
+	}
+	printf("|ALUMNO CON MAYOR CALIFICACION|\n");
+	printf("\n");
+	printf("El alumno con la mayor calificacion es: \n");
+	for (i=0; i<=2; ++i) {
+		printf("%f  ", alumnos[i][posicion]);
+	}
+	for (i=0; i<=4; ++i) {
+		printf("%f  ", parciales[i][posicion]);
+	}
+	printf("\n");
+	preguntadecontrol(alumnos, parciales);
+}
+
+void ordenamientomenormayor(SIN_TIPO alumnos[][], SIN_TIPO parciales[][]) {
+	char alumnosordenado[MAX_STRLEN][3][13];
+	int i;
+	int j;
+	float k;
+	int minimo;
+	float parcialesordenado[13];
+	printf("\n"); /* no hay forma directa de borrar la pantalla con C estandar */
+	/* limpiamos la pantalla */
+	/* definimos las variables a utilizar en el subproceso */
+	for (i=0; i<=12; ++i) {
+		parcialesordenado[i] = parciales[4][i];
+		for (j=0; j<=2; ++j) {
+			alumnosordenado[j][i] = alumnos[j][i];
+		}
+	}
+	for (i=0; i<=12-1; ++i) {
+		minimo = i;
+		for (j=i+1; j<=12; ++j) {
+			if (parcialesordenado[j]<parcialesordenado[minimo]) {
+				minimo = j;
+			}
+		}
+		intercambiarcalificaciones(parcialesordenado, i, minimo);
+		for (k=0; k<=2; ++k) {
+			intercambiaralumnos(alumnosordenado, i, minimo);
+		}
+	}
+	printf("|REPORTE DE CALIFICACIONES DEL GRUPO ORDENADOS DE MAYOR A MENOR|\n");
+	printf("\n");
+	printf("El las calificaciones ordenadas de mayor a menor son asi: \n");
+	for (i=12; i<=0; ++i) {
+		for (j=0; j<=2; ++j) {
+			printf("%s  ", alumnosordenado[j][i]);
+		}
+		printf("%f\n", parcialesordenado[i]);
+	}
+	printf("\n");
+	preguntadecontrol(alumnos, parciales);
+}
+
+void intercambiarcalificaciones(float calificaciones[], int i, int j) {
+	float temp;
+	/* Realiza el intercambio de calificaciones en la matriz */
+	temp = calificaciones[i];
+	calificaciones[i] = calificaciones[j];
+	calificaciones[j] = temp;
+}
+
+void intercambiaralumnos(char *alumnosordenado[][], int i, int j) {
+	int k;
+	char temp[MAX_STRLEN];
+	/* Realiza el intercambio de alumnos en la matriz */
+	for (k=0; k<=2; ++k) {
+		temp = alumnosordenado[k][i];
+		alumnosordenado[k][i] = alumnosordenado[k][j];
+		alumnosordenado[k][j] = temp;
+	}
+}
+
+void busquedaalumnoporid(char *alumnos[][], SIN_TIPO parciales[][]) {
+	int i;
+	char id[MAX_STRLEN];
+	int posicion;
+	printf("Dame el ID a buscar ");
+	scanf("%s", id);
+	for (i=0; i<=12; ++i) {
+		if (strcmp(alumnos[0][i], id)==0) {
+			printf("Estudiante encontrado, es:\n");
+			posicion = i;
+		}
+	}
+	for (i=0; i<=2; ++i) {
+		printf("%s  ", alumnos[i][posicion]);
+	}
+	for (i=0; i<=4; ++i) {
+		printf("%f  ", parciales[i][posicion]);
+	}
+	printf("\n");
+	preguntadecontrol(alumnos, parciales);
+}
+
+void porcentajesaprobadosreprobados(SIN_TIPO alumnos, float parciales[][]) {
+	int aprobados;
+	int i;
+	float porcentaje;
+	char respuesta[MAX_STRLEN];
+	printf("\n"); /* no hay forma directa de borrar la pantalla con C estandar */
+	/* limpiamos pantalla */
+	/* declaramos las variables a utilizar en el SubProceso  */
+	for (i=0; i<=12; ++i) {
+		if (parciales[4][i]>=7) {
+			aprobados = aprobados+1;
+		}
+	}
+	porcentaje = (aprobados*100)/13;
+	printf("|PORCENTAJE DE ALUMNOS APROBADOS Y REPROBADOS|\n");
+	printf("\n");
+	printf("el porcentaje de alumnos aprobados es del %f%\n", porcentaje);
+	printf("el porcentaje de alumnos reprobados es del %f%\n", (100-porcentaje));
+	preguntadecontrol(alumnos, parciales);
+}
+
+
+void esperar(double t) {
+	clock_t t0 = clock();
+	double e = 0;
+	do {
+		e = 1000*double(clock()-t0)/CLOCKS_PER_SEC;
+	} while (e<t);
+}
+
+
